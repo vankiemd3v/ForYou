@@ -1,0 +1,366 @@
+﻿@using ForYou.Dtos;
+@model List<ContractDto>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dues = new List<OrderBillDto>();
+    if(Model != null)
+    {
+        foreach (var contract in Model)
+        {
+            if(contract.Orders != null)
+            {
+                foreach(var item in contract.Orders)
+                {
+                    var orderBills = item.OrderBills.Where(x => x.DatePayment < DateTime.Now && x.Status == false).ToList();
+                    if(orderBills != null && orderBills.Any())
+                    {
+                        foreach (var bill in orderBills)
+                        {
+                            dues.Add(bill);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@section Scripts{
+   <script>
+        $(document).ready(function () {
+            var cloneCount = 2;
+            $('#btnAddPhuLuc').click(function () {
+                $('#phuluc1')
+                    .clone()
+                    .attr('id', 'phuluc' + cloneCount++)
+                    .insertAfter($('[id^=phuluc]:last'))
+                    .appendTo('#phuLucClone');
+            });
+        });
+   </script>
+}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class="h3 mb-2 text-gray-800">Hợp đồng</h1>
+            </div>
+            <div class="col-md-6">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Tạo hợp đồng
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <form asp-action="Create" asp-controller="Home" method="post">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Thêm hợp đồng</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label">Khách hàng</label>
+                                            <input type="text" name="customer" class="form-control">
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label">Hợp đồng số</label>
+                                            <input type="text" name="contractNumber" class="form-control" >
+                                        </div>
+                                        
+                                    </div>
+                                   @* <div id="phuluc1" class="col-md-12 rounded border pt-3 mb-4">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row border-bottom">
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Tên phụ lục</label>
+                                                        <input type="text" name="name" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Chu kỳ thanh toán</label>
+                                                        <input type="text" name="name" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Trả sau</label>
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-3">
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Dịch vụ sử dụng</label>
+                                                        <input type="text" name="name" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Ngày BĐ</label>
+                                                        <input type="text" name="startDate" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Ngày KT</label>
+                                                        <input type="text" name="endDate" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Số lượng</label>
+                                                        <input type="text" name="quantity" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Giá</label>
+                                                        <input type="text" name="price" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Số tháng</label>
+                                                        <input type="text" name="month" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label">Thành tiền</label>
+                                                        <input type="text" name="intoMoney" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="float-end mb-3">
+                                                    <button type="button" class="btn btn-success float-end">Thêm dịch vụ</button>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+                                        
+                                    </div>
+                                    <div id="phuLucClone"></div>
+                                    <div class="float-start mb-3">
+                                        <button id="btnAddPhuLuc" type="button" class="btn btn-warning float-end">Thêm phụ lục</button>
+                                    </div>*@
+                            </div>
+                                
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Hợp đồng đến kỳ thanh toán: <br />
+
+            </h6>
+            <p>
+                @if (dues != null)
+                {
+                    @foreach (var item in dues)
+                    {
+                        <span>
+                            - @if (item.Order.Contract != null)
+                            {
+                                @(item.Order.Contract.ContractNumber + " | " + @item.Order.Name + ": ")
+                            } Thanh toán lần @item.NumberPayment, ngày: @item.DatePayment.ToString("dd/MM/yyyy"), số tiền: @item.MoneyPayment.ToString("N0").Replace(",",".") <sup>đ</sup>
+                            @if (item.Status)
+                            {
+                                <span>Đã thanh toán</span>
+                            }
+                            else
+                            {
+                                <span> Chưa thanh toán</span>
+                            }
+                        </span>
+
+                        <br />
+                    }
+                }
+            </p>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive" style="font-size: 14px !important;">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>HĐ số</th>
+                            <th>Khách hàng</th>
+                            <th class="text-center">Các phụ lục</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            @foreach (var contract in Model)
+                            {
+                                <tr>
+                                    <td><a href="Home/Detail?id=@contract.Id">@contract.ContractNumber</a></td>
+                                    <td>@contract.Customer</td>
+                                    <td>
+                                        @if (contract.Orders != null && contract.Orders.Any())
+                                        {
+                                            foreach (var item in contract.Orders)
+                                            {
+                                                int n = 0;
+                                                int i = 0;
+                                                <div class="d-flex flex-column mb-4">
+                                                    <table class="border">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <td colspan="8" class="font-weight-bold" style="background: #272727;color: white;font-weight: bold;font-size: 14px;">
+                                                                    @item.Name | Chu kỳ thanh toán:
+                                                                    @if (item.PaymentCycle != null)
+                                                                    {
+                                                                        @item.PaymentCycle!.Month
+                                                                    } tháng/lần |
+                                                                    @if (!item.IsPostPaid)
+                                                                    {
+                                                                        <span>Trả trước</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span>Trả sau</span>
+                                                                    }
+                                                                    |
+                                                                    @item.PriceService.ToString("N0").Replace(",", ".") <sup>đ</sup> +
+                                                                    @item.Tax.ToString("N0").Replace(",", ".") <sup>đ</sup> =
+                                                                    @item.TotalPayment.ToString("N0").Replace(",", ".") <sup>đ</sup>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>STT</th>
+                                                                <th>Nội dung</th>
+                                                                <th>SL</th>
+                                                                <th>Đơn giá/tháng</th>
+                                                                <th>Thời gian</th>
+                                                                <th>Từ ngày</th>
+                                                                <th>Đến ngày</th>
+                                                                <th>Thành tiền</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            @foreach (var service in item.OrderDetails)
+                                                            {
+                                                                n++;
+                                                                <tr>
+                                                                    <td>@n</td>
+                                                                    <td>@service.Name</td>
+                                                                    <td>@service.Quantity</td>
+                                                                    <td>@service.Price.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                                                    <td>@service.Month tháng</td>
+                                                                    <td>@service.StartDate.ToString("dd/MM/yyyy")</td>
+                                                                    <td>@service.EndDate.ToString("dd/MM/yyyy")</td>
+                                                                    <td>@service.IntoMoney.ToString("N0").Replace(",", ".")<sup>đ</sup></td>
+                                                                </tr>
+                                                            }
+                                                            @*<tr>
+                                            <td colspan="7">Tổng chi phí</td>
+                                            <td>@item.PriceService.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+
+                                            </tr>
+                                            <tr>
+                                            <td colspan="7">Thuế VAT (10%)</td>
+                                            <td>@item.Tax.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                            </tr>
+                                            <tr>
+                                            <td colspan="7">Tổng tiền</td>
+                                            <td>@item.TotalPayment.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                            </tr>*@
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="border">
+                                                        <tr>
+                                                            <th>STT</th>
+                                                            <th>Số lần TT</th>
+                                                            <th>Hạn thanh toán</th>
+                                                            <th>Số tiền</th>
+                                                            <th>Trạng thái</th>
+                                                        </tr>
+                                                        @foreach (var orderBill in item.OrderBills)
+                                                        {
+                                                            i++;
+                                                            if (!orderBill.Status && orderBill.DatePayment < DateTime.Now)
+                                                            {
+                                                                <tr style="color: #ff0000d6;font-weight: bold;">
+                                                                    <td>@i</td>
+                                                                    <td>Thanh toán lần @orderBill.NumberPayment</td>
+                                                                    <td>@orderBill.DatePayment.ToString("dd/MM/yyyy")</td>
+                                                                    <td>@orderBill.MoneyPayment.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                                                    <td>
+                                                                        @if (@orderBill.Status)
+                                                                        {
+                                                                            <span>Đã thanh toán</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>Chưa thanh toán</span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                            else if (orderBill.Status && orderBill.DatePayment < DateTime.Now)
+                                                            {
+                                                                <tr style="color: green;font-weight: bold;">
+                                                                    <td>@i</td>
+                                                                    <td>Thanh toán lần @orderBill.NumberPayment</td>
+                                                                    <td>@orderBill.DatePayment.ToString("dd/MM/yyyy")</td>
+                                                                    <td>@orderBill.MoneyPayment.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                                                    <td>
+                                                                        @if (@orderBill.Status)
+                                                                        {
+                                                                            <span>Đã thanh toán</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>Chưa thanh toán</span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                            else
+                                                            {
+                                                                <tr>
+                                                                    <td>@i</td>
+                                                                    <td>Thanh toán lần @orderBill.NumberPayment</td>
+                                                                    <td>@orderBill.DatePayment.ToString("dd/MM/yyyy")</td>
+                                                                    <td>@orderBill.MoneyPayment.ToString("N0").Replace(",", ".") <sup>đ</sup></td>
+                                                                    <td>
+                                                                        @if (@orderBill.Status)
+                                                                        {
+                                                                            <span>Đã thanh toán</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>Chưa thanh toán</span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </table>
+                                                </div>
+
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
