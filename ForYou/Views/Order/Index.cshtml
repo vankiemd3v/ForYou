@@ -54,20 +54,24 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr class="text-center">
+                                        <th width="5%">STT</th>
                                         <th width="25%">Phụ lục</th>
                                         <th width="15%">Hợp đồng</th>
                                         <th width="15%">Thanh toán lần thứ</th>
                                         <th width="15%">Hạn thanh toán</th>
                                         <th width="15%">Số tiền</th>
-                                        <th width="15%">Trạng thái</th>
+                                        <th width="10%">Trạng thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if(Model.Items != null && Model.Items.Any())
                                     {
+                                        int stt = 0;
                                         @foreach(var orderBillDto in Model.Items)
                                         {
+                                            stt++;
                                             <tr data-widget="expandable-table" aria-expanded="false">
+                                                <td class="text-center">@stt</td>
                                                 <td>
                                                     @if(@orderBillDto.Order != null)
                                                     {
@@ -98,7 +102,7 @@
 
                                             </tr>
                                             <tr class="expandable-body">
-                                                <td colspan="6">
+                                                <td colspan="7">
                                                     @if (ViewBag.Contracts != null)
                                                     {
                                                         @foreach (var contract in ViewBag.Contracts)
@@ -362,7 +366,7 @@
                                     else
                                     {
                                         <tr>
-                                            <td colspan="6" class="text-center">Tất cả các phụ lục đã được thanh toán</td>
+                                            <td colspan="7" class="text-center">Tất cả các phụ lục đã được thanh toán</td>
                                         </tr>
                                     }
 
@@ -372,35 +376,71 @@
                         <!-- /.card-body -->
                         @if(Model.PageCount > 0)
                         {
-                            <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-right">
-                                    @if(Model.PageIndex > 1)
-                                    {
-                                        int pageIndex = Model.PageIndex-1;
-                                        <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1">«</a></li>
-                                    }
-                                    else if(Model.PageIndex == 1)
-                                    {
-                                        <li class="page-item"><a class="page-link" href="/Order?pageIndex=1&pageSize=1">«</a></li>
-                                    }
+                            @if (String.IsNullOrEmpty(ViewBag.Keyword))
+                            {
+                                <div class="card-footer clearfix">
+                                    <ul class="pagination pagination-sm m-0 float-right">
+                                            @if(Model.PageIndex > 1)
+                                            {
+                                                int pageIndex = Model.PageIndex-1;
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1">«</a></li>
+                                            }
+                                            else if(Model.PageIndex == 1)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=1&pageSize=1">«</a></li>
+                                            }
 
 
-                                    @for(int i = 1; i <= Model.PageCount; i++)
-                                    {
-                                        <li class="page-item"><a class="page-link" href="/Order?pageIndex=@i&pageSize=1">@i</a></li>
-                                    }
+                                            @for(int i = 1; i <= Model.PageCount; i++)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@i&pageSize=1">@i</a></li>
+                                            }
 
-                                    @if(Model.PageIndex < Model.PageCount)
-                                    {
-                                        int pageIndex = Model.PageIndex+1;
-                                        <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1">»</a></li>
-                                    }
-                                    else
-                                    {
-                                        <li class="page-item"><a class="page-link" href="/Order?pageIndex=@Model.PageCount&pageSize=1">»</a></li>
-                                    }
-                            </ul>
-                        </div>
+                                            @if(Model.PageIndex < Model.PageCount)
+                                            {
+                                                int pageIndex = Model.PageIndex+1;
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1">»</a></li>
+                                            }
+                                            else
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@Model.PageCount&pageSize=1">»</a></li>
+                                            }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                var keyword = ViewBag.Keyword;
+                                <div class="card-footer clearfix">
+                                    <ul class="pagination pagination-sm m-0 float-right">
+                                            @if(Model.PageIndex > 1)
+                                            {
+                                                int pageIndex = Model.PageIndex-1;
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1&keyword=@keyword">«</a></li>
+                                            }
+                                            else if(Model.PageIndex == 1)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=1&pageSize=1&keyword=@keyword">«</a></li>
+                                            }
+
+
+                                            @for(int i = 1; i <= Model.PageCount; i++)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@i&pageSize=1&keyword=@keyword">@i</a></li>
+                                            }
+
+                                            @if(Model.PageIndex < Model.PageCount)
+                                            {
+                                                int pageIndex = Model.PageIndex+1;
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@pageIndex&pageSize=1&keyword=@keyword">»</a></li>
+                                            }
+                                            else
+                                            {
+                                                <li class="page-item"><a class="page-link" href="/Order?pageIndex=@Model.PageCount&pageSize=1&keyword=@keyword">»</a></li>
+                                            }
+                                    </ul>
+                                </div>
+                            }
                         }
                     </div>
                     <!-- /.card -->

@@ -30,7 +30,7 @@ namespace ForYou.Controllers
             var orders = await _orderService.GetOrdersPaymentDue(request);
             if (orders != null)
             {
-                ViewBag.Contracts = await _contractService.GetContracts();
+                ViewBag.Contracts = await _contractService.GetListContracts();
                 return View(orders);
             }
             return View();
