@@ -11,6 +11,7 @@ builder.Services.AddDbContext<ForYouDbContext>(options =>
 });
 
 builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
