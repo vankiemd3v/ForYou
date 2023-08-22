@@ -22,7 +22,7 @@ namespace ForYou.Controllers
             if (request.PageIndex == 0)
                 request.PageIndex = 1;
             if (request.PageSize == 0)
-                request.PageSize = 1;
+                request.PageSize = 10;
             if (!String.IsNullOrEmpty(request.Keyword))
                 ViewBag.Keyword = request.Keyword;
             var contracts = await _contractService.GetPagingContracts(request);
